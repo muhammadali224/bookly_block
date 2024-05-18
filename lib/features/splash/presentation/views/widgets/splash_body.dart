@@ -1,7 +1,6 @@
-import 'package:bloc_book/features/home/presentation/views/home.dart';
 import 'package:bloc_book/generated/assets.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/route_manager.dart';
+import 'package:go_router/go_router.dart';
 
 class SplashBody extends StatefulWidget {
   const SplashBody({super.key});
@@ -25,10 +24,13 @@ class _SplashBodyState extends State<SplashBody>
             .animate(animationController);
     animationController.forward();
     Future.delayed(
-        const Duration(seconds: 2),
-        () => Get.to(() => const HomeScreen(),
-            transition: Transition.fadeIn,
-            duration: const Duration(milliseconds: 250)));
+        const Duration(seconds: 2), () => GoRouter.of(context).push('/home')
+        // () => Get.to(
+        //   () => const HomeScreen(),
+        //   transition: Transition.fadeIn,
+        //   duration: const Duration(milliseconds: 250),
+        // ),
+        );
   }
 
   @override
