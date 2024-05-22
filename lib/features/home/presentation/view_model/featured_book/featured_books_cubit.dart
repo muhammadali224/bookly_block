@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_book/Features/home/data/repo/home_repo.dart';
-import 'package:bloc_book/core/error/error_handling.dart';
 
 import '../../../data/model/book_model.dart';
 
@@ -14,10 +13,13 @@ class FeaturedBooksCubit extends Cubit<FeaturedBooksState> {
     emit(FeaturedBooksLoading());
 
     var result = await homeRepo.fetchFeatureBook();
-    if (result.$1.runtimeType == ServerFailure) {
-      emit(FeaturedBooksFailure(errorMessage: "errorMessage"));
-    } else if (result.$1.runtimeType == ServerSuccess) {
-      emit(FeaturedBooksSuccess(books: result.$2!));
-    }
+
+    result.fold((failure) {
+      emit(FeaturedBooksFailure(
+        errorMessage: failure.message,
+      ));
+    }, (books) {
+      emit(FeaturedBooksSuccess(books: books));
+    });
   }
 }

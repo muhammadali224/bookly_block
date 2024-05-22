@@ -2,6 +2,7 @@ import 'package:bloc_book/Features/home/data/model/book_model.dart';
 import 'package:bloc_book/Features/home/data/repo/home_repo.dart';
 import 'package:bloc_book/core/error/error_handling.dart';
 import 'package:bloc_book/core/services/api_services.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 class HomeRepoImpl implements HomeRepo {
@@ -10,7 +11,7 @@ class HomeRepoImpl implements HomeRepo {
   HomeRepoImpl(this.apiServices);
 
   @override
-  Future<(Failure?, List<BookModel>?)> fetchBestSeller() async {
+  Future<Either<Failure, List<BookModel>>> fetchBestSeller() async {
     try {
       var data = await apiServices.get(
           endPoint: "volumes?Filtering=free-ebooks&q=subject:programming");
@@ -18,19 +19,23 @@ class HomeRepoImpl implements HomeRepo {
       List<BookModel> books = [];
 
       books.addAll(response.map((e) => BookModel.fromJson(e)));
-      return books.isNotEmpty
-          ? (ServerSuccess(message: "success"), books)
-          : (ServerEmptyData(message: "no data"), null);
+      return right(books);
     } catch (e) {
       if (e is DioException) {
-        return (ServerFailure.fromDioError(e), <BookModel>[]);
+        return left(
+          ServerFailure.fromDioError(e),
+        );
       }
-      return (ServerFailure(message: "$e"), null);
+      return left(
+        ServerFailure(
+          message: e.toString(),
+        ),
+      );
     }
   }
 
   @override
-  Future<(Failure?, List<BookModel>?)> fetchFeatureBook() async {
+  Future<Either<Failure, List<BookModel>>> fetchFeatureBook() async {
     try {
       var data = await apiServices.get(
           endPoint:
@@ -39,14 +44,18 @@ class HomeRepoImpl implements HomeRepo {
       List<BookModel> books = [];
 
       books.addAll(response.map((e) => BookModel.fromJson(e)));
-      return books.isNotEmpty
-          ? (ServerSuccess(message: "success"), books)
-          : (ServerEmptyData(message: "no data"), null);
+      return right(books);
     } catch (e) {
       if (e is DioException) {
-        return (ServerFailure.fromDioError(e), <BookModel>[]);
+        return left(
+          ServerFailure.fromDioError(e),
+        );
       }
-      return (ServerFailure(message: "$e"), null);
+      return left(
+        ServerFailure(
+          message: e.toString(),
+        ),
+      );
     }
   }
 }
