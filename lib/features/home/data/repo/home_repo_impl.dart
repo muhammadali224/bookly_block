@@ -19,6 +19,7 @@ class HomeRepoImpl implements HomeRepo {
       List<BookModel> books = [];
 
       books.addAll(response.map((e) => BookModel.fromJson(e)));
+      print(books);
       return right(books);
     } catch (e) {
       if (e is DioException) {
@@ -44,6 +45,7 @@ class HomeRepoImpl implements HomeRepo {
       List<BookModel> books = [];
 
       books.addAll(response.map((e) => BookModel.fromJson(e)));
+      print(books);
       return right(books);
     } catch (e) {
       if (e is DioException) {
